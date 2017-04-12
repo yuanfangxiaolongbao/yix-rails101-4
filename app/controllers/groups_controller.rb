@@ -32,7 +32,7 @@ class GroupsController < ApplicationController
   def update
 
 
-    if @group.update(group_parames)
+    if @group.update(group_params)
       redirect_to group_path, notice: "更新成功"
   else
     render :edit
@@ -41,7 +41,7 @@ end
 
 
   def destroy
-   
+
 
     @group.destroy
     redirect_to groups_path, alert: "删除成功"
@@ -50,7 +50,7 @@ end
   private
 
   def find_group_and_check_permission
-    @group = Group.find(parame[:id])
+    @group = Group.find(params[:id])
 
     if current_user != @group.user
       redirect_to root_path, alert: "您没有操作权限"
