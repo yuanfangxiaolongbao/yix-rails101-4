@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user! , only: [:new, :create, :edit, :update, :destroy, :join, :quit]
   before_action :find_group_and_check_permission, only: [:edit, :update, :destroy]
   def index
     @groups = Group.all
@@ -47,6 +47,32 @@ end
     @group.destroy
     redirect_to groups_path, alert: "删除成功"
   end
+
+  def join
+    @group = Group.find(params[:id])
+
+      if !current_user.is_member_of?(@group)
+        current_user.join!(@group)
+        flash[:notice] = "加入大神群成功! "
+      else
+        flash[:warning] = "你已经是大神成员了!"
+      end
+
+      redirect_to group_path(@group)
+    end
+
+    def quit
+      @group = Group.find(params[:id])
+
+      if current_user.is_member_of?(@group)
+        current_user.quit!(@group)
+        flash[:alert] = "已退出大神群！"
+      else
+        flash[:warning] = "你不是大神群成员，怎么退出 -。-"
+      end
+
+      redirect_to group_path(@group)
+    end
 
   private
 
